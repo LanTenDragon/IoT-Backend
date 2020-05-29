@@ -19,7 +19,7 @@
     "nyc": "^15.0.1"
   },
   "scripts": {
-    "start": "nodemon indedx.js",
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
