@@ -1,7 +1,7 @@
 const Socket = require('../models/socket')
-const Group = require('../models/group')
+const Logger = require('../logger')
 
-exports.findAll = (req, res) => {
+exports.getAll = (req, res) => {
   Socket.find()
     .then(socket => {
       res.json(socket)
@@ -13,57 +13,34 @@ exports.findAll = (req, res) => {
 }
 
 exports.create = function (req, res) {
-  const socket = new Socket({
-    name: 'Kitchen Stove',
-    status: false,
-    image: 'stove.jpg',
-    colour: 'red'
-  })
-
-  socket.save(function (err) {
+  const newSocket = new Socket(req.body)
+  newSocket.save(function (err) {
     if (err) return console.log(err.stack)
-    console.log('Kitchen Stove is added')
-    res.json('Kitchen Stove added')
+    Logger('New Group is added')
+    res.json(newSocket)
   })
 }
 
-exports.create2 = (req, res) => {
-  const socket = new Socket({
-    name: 'Toaster',
-    status: false,
-    image: 'toaster.jpg',
-    colour: 'green'
-  })
-
-  socket.save(function (err) {
-    if (err) return console.log(err.stack)
-    console.log('Toaster is added')
-    res.json('Toaster added')
+exports.getById = function (req, res) {
+  Socket.findById(req.params.groupId, function (err, task) {
+    if (err) { res.send(err) }
+    res.json(task)
   })
 }
 
-function findGroupId (Name) {
-  return Group.find({ name: Name })
+exports.update = function (req, res) {
+  Socket.findOneAndUpdate(
+    { _id: req.params.socketId }, req.body, { new: true }, function (err, task) {
+      if (err) { res.send(err) }
+      res.json(task)
+    })
 }
 
-exports.update = (req, res) => {
-  const query = findGroupId('Kitchen Group')
-  query.exec(function (err, group) {
-    if (err) return console.log(err.stack)
-    console.log(group[0]._id)
-
-    Socket.findOneAndUpdate(
-      { name: 'Kitchen Stove' },
-      { $push: { groups: group[0]._id } },
-      function (err, socket) {
-        if (err) return console.log(err.stack)
-        res.json(socket)
-      }
-    )
+exports.delete = (req, res) => {
+  Socket.deleteOne({
+    _id: req.params.socketId
+  }, function (err, task) {
+    if (err) { res.send(err) }
+    res.json({ message: 'Socket successfully deleted' })
   })
-}
-
-exports.deleteAll = (req, res) => {
-  Socket.deleteMany({})
-    .then(res.json('deleted'))
 }
