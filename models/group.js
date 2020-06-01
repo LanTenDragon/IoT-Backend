@@ -8,11 +8,12 @@ const groupSchema = new Schema({
   },
   status: {
     type: Boolean,
-    required: true
+    required: true,
+    default: false
   },
   image: {
     type: String,
-    required: true
+    default: 'power-symbol.jpg'
   },
   colour: {
     type: String,

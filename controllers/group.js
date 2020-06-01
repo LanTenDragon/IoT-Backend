@@ -1,6 +1,7 @@
 const Group = require('../models/group')
+const Logger = require('../logger')
 
-exports.findAll = (req, res) => {
+exports.getAll = (req, res) => {
   Group.find()
     .then(groups => {
       res.json(groups)
@@ -12,36 +13,34 @@ exports.findAll = (req, res) => {
 }
 
 exports.create = function (req, res) {
-  const group = new Group({
-    name: 'Kitchen Group',
-    status: false,
-    image: 'group1.jpg',
-    colour: 'black'
-  })
-
-  group.save(function (err) {
+  const newGroup = new Group(req.body)
+  newGroup.save(function (err) {
     if (err) return console.log(err.stack)
-    console.log('Kitchen Group is added')
-    res.json('Kitchen Group added')
+    Logger('New Group is added')
+    res.json(newGroup)
   })
 }
 
-exports.create2 = function (req, res) {
-  const group = new Group({
-    name: 'Living Room',
-    status: false,
-    image: 'Living Room.jpg',
-    colour: 'black'
-  })
-
-  group.save(function (err) {
-    if (err) return console.log(err.stack)
-    console.log('Living Room Group is added')
-    res.json('Living Room Group added')
+exports.getById = function (req, res) {
+  Group.findById(req.params.groupId, function (err, task) {
+    if (err) { res.send(err) }
+    res.json(task)
   })
 }
 
-exports.deleteAll = (req, res) => {
-  Group.deleteMany({})
-    .then(res.json('deleted'))
+exports.update = function (req, res) {
+  Group.findOneAndUpdate(
+    { _id: req.params.groupId }, req.body, { new: true }, function (err, task) {
+      if (err) { res.send(err) }
+      res.json(task)
+    })
+}
+
+exports.delete = (req, res) => {
+  Group.deleteOne({
+    _id: req.params.groupId
+  }, function (err, task) {
+    if (err) { res.send(err) }
+    res.json({ message: 'Group successfully deleted' })
+  })
 }
