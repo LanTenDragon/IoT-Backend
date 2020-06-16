@@ -8,4 +8,8 @@ module.exports = function (app) {
     .get(sockets.getById)
     .put(sockets.update)
     .delete(sockets.delete)
+
+  app.route('/sockets/:socketId/state')
+    .get(sockets.getState)
+    .put(sockets.updateState)
 }
