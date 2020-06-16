@@ -41,7 +41,7 @@ exports.update = function (req, res) {
 exports.delete = (req, res) => {
   Socket.deleteOne({
     _id: req.params.socketId
-  }, function (err, task) {
+  }, function (err) {
     if (err) { res.send(err) }
     res.json({ message: 'Socket successfully deleted' })
   })
@@ -65,7 +65,14 @@ exports.updateState = function (req, res) {
       const payload = req.body.socketState
       MqttClient.publish(topic, payload, { retain: true }, function (err) {
         if (err) { res.json(err) }
-        res.json({ topic: topic, payload: payload })
+        Socket.find()
+          .then(socket => {
+            res.json(socket)
+          }).catch(err => {
+            res.status(500).send({
+              message: err.message
+            })
+          })
       })
     })
 }
