@@ -1,5 +1,6 @@
 .directroy
 public/js
+.env.*
 
 #WebStorm
 **/.idea/workspace.xml 
