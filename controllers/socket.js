@@ -30,6 +30,13 @@ exports.getById = function (req, res) {
   })
 }
 
+exports.getByUserId = (req, res) => {
+  Socket.find({ belongsTo: req.params.userId }, function (err, task) {
+    if (err) { res.send(err) }
+    res.json(task)
+  })
+}
+
 exports.update = function (req, res) {
   Socket.findOneAndUpdate(
     { _id: req.params.socketId }, req.body, { new: true }, function (err, task) {
@@ -61,8 +68,9 @@ exports.updateState = function (req, res) {
   Socket.findOneAndUpdate(
     { _id: req.params.socketId }, stateObject, { new: true }, function (err, task) {
       if (err) { res.send(err) }
-      const topic = 'socket/' + task.name + '/state'
+      const topic = 'socket/' + req.body.userid + '/' + task._id + '/state'
       const payload = req.body.socketState
+      Logger(topic.toString() + ' ' + payload.toString())
       MqttClient.publish(topic, payload, { retain: true }, function (err) {
         if (err) { res.json(err) }
         Socket.find()
