@@ -12,4 +12,7 @@ module.exports = function (app) {
   app.route('/sockets/:socketId/state')
     .get(sockets.getState)
     .put(sockets.updateState)
+
+  app.route('/sockets/belongingto/:userId')
+    .get(sockets.getByUserId)
 }

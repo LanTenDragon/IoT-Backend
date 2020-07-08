@@ -8,4 +8,7 @@ module.exports = function (app) {
     .get(groups.getById)
     .put(groups.update)
     .delete(groups.delete)
+
+  app.route('/groups/belongingto/:userId')
+    .get(groups.getByUserId)
 }
