@@ -18,7 +18,8 @@ const groupSchema = new Schema({
   colour: {
     type: String,
     required: true
-  }
+  },
+  belongsTo: { type: Schema.Types.ObjectId, ref: 'users' }
 })
 
 module.exports = mongoose.model('Group', groupSchema)

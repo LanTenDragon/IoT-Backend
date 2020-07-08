@@ -8,17 +8,19 @@ const socketSchema = new Schema({
   },
   status: {
     type: Boolean,
+    default: false,
     required: true
   },
   image: {
     type: String,
-    required: true
+    default: 'power-symbol.jpg'
   },
   colour: {
     type: String,
     required: true
   },
-  groups: [{ type: Schema.Types.ObjectId, ref: 'group' }]
+  groups: [{ type: Schema.Types.ObjectId, ref: 'group' }],
+  belongsTo: { type: Schema.Types.ObjectId, ref: 'users' }
 })
 
 module.exports = mongoose.model('Socket', socketSchema)
