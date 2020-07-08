@@ -1,30 +1,34 @@
 'use strict'
 
-require('dotenv').config()
-const Logger = require('./logger')
-const port = process.env.PORT || 8080
-const MongoURL = process.env.MONGO - URL || 'mongodb://localhost/test'
+require('dotenv').config({ path: '.env.' + process.env.NODE_ENV })
+require('./controllers/mqtt')
 
+const port = process.env.PORT || 3001
+const MongoURL = process.env.MONGODB || 'mongodb://localhost/test'
+const corsOption = { origin: '*' }
+
+const Logger = require('./logger')
 const express = require('express')
 const cors = require('cors')
-const app = express()
-app.use(cors())
-
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+
+const app = express()
+app.use(cors(corsOption))
 app.use(bodyParser.json())
 
-const mongoose = require('mongoose')
 mongoose.connect(MongoURL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
 
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', function () {
-  console.log('Mongoose connection successful')
+  Logger('Mongoose connection successful')
 })
 
 require('./routes/group')(app)
 require('./routes/socket')(app)
 require('./routes/client')(app)
+require('./routes/user')(app)
 
 const server = app.listen(port, function () {
   const host = 'localhost'
