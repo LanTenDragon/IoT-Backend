@@ -1,11 +1,9 @@
 'use strict'
 
 require('dotenv').config({ path: '.env.' + process.env.NODE_ENV })
-require('./controllers/mqtt')
 
 const port = process.env.PORT || 3001
 const MongoURL = process.env.MONGODB || 'mongodb://localhost/test'
-const corsOption = { origin: '*' }
 
 const Logger = require('./logger')
 const express = require('express')
@@ -14,7 +12,7 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 
 const app = express()
-app.use(cors(corsOption))
+app.use(cors())
 app.use(bodyParser.json())
 
 mongoose.connect(MongoURL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
