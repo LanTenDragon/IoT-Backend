@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt')
 exports.register = (req, res) => {
   User.findOne({ username: req.body.username })
     .then(user => {
-      if (user) { res.send({ message: 'Username already taken!' }) } else {
+      if (user) { res.status(401).send({ message: 'Username already taken!' }) } else {
         const newUser = new User({
           username: req.body.username,
           hash: bcrypt.hashSync(req.body.password, 8)
@@ -23,6 +23,7 @@ exports.register = (req, res) => {
 
         const KitchenGroup = new Group({
           name: 'Kitchen Group',
+          image: 'kitchen.jpg',
           status: false,
           colour: 'yellow',
           belongsTo: newUser._id
@@ -44,29 +45,44 @@ exports.register = (req, res) => {
           belongsTo: newUser._id
         })
 
-        const KitchenHiPower = new Socket({
-          name: 'Kitchen High Power Test Socket',
+        const KitchenStove = new Socket({
+          name: 'Kitchen Stove',
           status: 'false',
+          image: 'stove.jpg',
           colour: 'red',
-          groups: [LivingRoomGroup._id],
+          groups: [KitchenGroup._id],
           belongsTo: newUser._id
         })
 
-        const KitchenLowPower = new Socket({
-          name: 'Kitchen Low Power Test Socket',
+        const KitchenToaster = new Socket({
+          name: 'Kitchen Toaster',
           status: 'false',
+          image: 'toaster.jpg',
           colour: 'red',
-          groups: [LivingRoomGroup._id],
+          groups: [KitchenGroup._id],
           belongsTo: newUser._id
         })
 
-        res.status(200).json([KitchenGroup, LivingRoomGroup, LivingHiPower, LivingLowPower])
+        const UngroupedLowPower = new Socket({
+          name: 'Ungrouped Low Power Test Socket',
+          status: 'false',
+          colour: 'red',
+          belongsTo: newUser._id
+        })
+
+        const UngroupedHighPower = new Socket({
+          name: 'Ungrouped High Power Test Socket',
+          status: 'false',
+          colour: 'red',
+          belongsTo: newUser._id
+        })
 
         newUser.save((err) => {
           if (err) {
             res.status(501).message('Internal Server Error')
             return Logger(err.stack)
           }
+          Logger('saved user')
         })
 
         LivingRoomGroup.save((err) => {
@@ -74,6 +90,7 @@ exports.register = (req, res) => {
             res.status(501).message('Internal Server Error')
             Logger(err.stack)
           }
+          Logger('saved group')
         })
 
         KitchenGroup.save((err) => {
@@ -97,18 +114,35 @@ exports.register = (req, res) => {
           }
         })
 
-        KitchenHiPower.save((err) => {
+        KitchenStove.save((err) => {
           if (err) {
             res.status(501).message('Internal Server Error')
             Logger(err.stack)
           }
         })
 
-        KitchenLowPower.save((err) => {
+        KitchenToaster.save((err) => {
           if (err) {
             res.status(501).message('Internal Server Error')
             Logger(err.stack)
           }
+          Logger('saved kitchen low power')
+        })
+
+        UngroupedHighPower.save((err) => {
+          if (err) {
+            res.status(501).message('Internal Server Error')
+            Logger(err.stack)
+          }
+          Logger('saved ungrouped high power')
+        })
+
+        UngroupedLowPower.save((err) => {
+          if (err) {
+            res.status(501).message('Internal Server Error')
+            Logger(err.stack)
+          }
+          Logger('saved ungrouped low power')
         })
 
         res.status(200).send({ message: 'Registration Successful' })
