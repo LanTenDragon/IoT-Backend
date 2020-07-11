@@ -16,6 +16,7 @@ exports.register = (req, res) => {
 
         const LivingRoomGroup = new Group({
           name: 'Living Group',
+          image: 'living-room.jpg',
           status: false,
           colour: 'red',
           belongsTo: newUser._id
@@ -40,6 +41,15 @@ exports.register = (req, res) => {
         const LivingLowPower = new Socket({
           name: 'Living Room Low Power Test Socket',
           status: 'false',
+          colour: 'red',
+          groups: [LivingRoomGroup._id],
+          belongsTo: newUser._id
+        })
+
+        const Desktop = new Socket({
+          name: 'Desktop PC',
+          status: 'false',
+          image: 'gaming-setup.jpg',
           colour: 'red',
           groups: [LivingRoomGroup._id],
           belongsTo: newUser._id
@@ -108,6 +118,13 @@ exports.register = (req, res) => {
         })
 
         LivingLowPower.save((err) => {
+          if (err) {
+            res.status(501).message('Internal Server Error')
+            Logger(err.stack)
+          }
+        })
+
+        Desktop.save((err) => {
           if (err) {
             res.status(501).message('Internal Server Error')
             Logger(err.stack)
