@@ -73,7 +73,7 @@ exports.updateState = function (req, res) {
       Logger(topic.toString() + ' ' + payload.toString())
       MqttClient.publish(topic, payload, { retain: true }, function (err) {
         if (err) { res.json(err) }
-        Socket.find()
+        Socket.find({ belongsTo: req.body.userid })
           .then(socket => {
             res.json(socket)
           }).catch(err => {
