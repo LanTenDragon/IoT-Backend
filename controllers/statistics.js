@@ -68,7 +68,7 @@ exports.getPower = (req, res) => {
           {
             $match: {
               belongsTo: { $in: ids },
-              timestamp: { $lt: date }
+              timestamp: { $gt: date }
             }
           }, {
             $group: {
