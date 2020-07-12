@@ -192,3 +192,15 @@ exports.logIn = (req, res) => {
       })
     })
 }
+
+exports.getAllUsers = (req, res) => {
+  User.find()
+    .then(result => {
+      res.json(result)
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message
+      })
+    })
+}
