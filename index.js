@@ -27,6 +27,7 @@ require('./routes/group')(app)
 require('./routes/socket')(app)
 require('./routes/client')(app)
 require('./routes/user')(app)
+require('./routes/statistics')(app)
 
 const server = app.listen(port, function () {
   const host = 'localhost'
