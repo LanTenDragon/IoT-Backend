@@ -13,5 +13,5 @@ module.exports = function (app) {
     .get(stats.getUnassigned)
 
   app.route('/statistics/:userid/power')
-    .get(stats.getPower)
+    .post(stats.getPower)
 }
