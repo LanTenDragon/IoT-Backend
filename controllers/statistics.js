@@ -53,7 +53,7 @@ exports.getUnassigned = (req, res) => {
 
 exports.getPower = (req, res) => {
   const date = new Date()
-  date.setDate(date.getDate() - 1)
+  date.setDate(date.getDate() - req.body.days)
   date.setHours(date.getHours() + 8)
   Logger("Yesterday's date: " + date.toISOString())
 
@@ -65,27 +65,9 @@ exports.getPower = (req, res) => {
 
       Power.aggregate(
         [
-          {
-            $match: {
-              belongsTo: { $in: ids },
-              timestamp: { $gt: date }
-            }
-          }, {
-            $group: {
-              _id: '$belongsTo',
-              total: {
-                $sum: {
-                  $add: [
-                    '$amount'
-                  ]
-                }
-              }
-            }
-          }, {
-            $sort: {
-              total: -1
-            }
-          }
+          { $match: { belongsTo: { $in: ids }, timestamp: { $gt: date } } },
+          { $group: { _id: '$belongsTo', total: { $sum: { $add: ['$amount'] } } } },
+          { $sort: { total: -1 } }
         ])
         .then(PowerResult => {
           PowerResult.map(item => {
